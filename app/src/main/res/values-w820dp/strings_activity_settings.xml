@@ -59,11 +59,18 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
 
-    <!--Sorting Type -->
-    <string name="pref_sort_label">Sort By</string>
-    <string name="pref_sort_key">sortBy</string>
-    <string name="pref_sort_rating_label">Rating</string>
-    <string name="pref_sort_popular_label">Ropular</string>
-    <string name="pref_sort_rating">rating.desc</string>
-    <string name="pref_sort_popular">popularity.desc</string>
+    <!--Location strings -->
+    <string name="pref_location_title">Location</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_default" translatable="false">94043</string>
+
+    <!--Metric strings -->pref_units_label
+    <string name="pref_units_label">Units</string>
+    <string name="pref_units_key">units</string>
+    <string name="pref_units_metric_label">Metric</string>
+    <string name="pref_units_imperial_label">Imperial</string>
+    <string name="pref_units_metric">metric</string>
+    <string name="pref_units_imperial">imperial</string>
+
+
 </resources>
