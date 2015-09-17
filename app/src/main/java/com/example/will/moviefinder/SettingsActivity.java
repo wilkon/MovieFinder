@@ -10,33 +10,34 @@ import android.preference.PreferenceFragment;
 /**
  * Created by will on 9/17/2015.
  */
-public class SettingsActivity extends PreferenceActivity  {
+public class SettingsActivity extends PreferenceActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsActivityFragment()).commit();
+        getFragmentManager().beginTransaction().replace(android.R.id.content,
+                new SettingsActivityFragment()).commit();
     }
 
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Preference pref = findPreference(key);
+
+        if (pref instanceof ListPreference) {
+            ListPreference listPref = (ListPreference) pref;
+            pref.setSummary(listPref.getEntry());
+        }
+    }
+
     public static class SettingsActivityFragment extends PreferenceFragment
-            implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-        }
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            Preference pref = findPreference(key);
-
-            if (pref instanceof ListPreference) {
-                ListPreference listPref = (ListPreference) pref;
-                pref.setSummary(listPref.getEntry());
-            }
         }
     }
 }
