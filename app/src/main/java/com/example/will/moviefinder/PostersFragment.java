@@ -20,10 +20,8 @@ import android.widget.GridView;
 import com.example.will.moviefinder.adapters.ImageAdapter;
 import com.example.will.moviefinder.helpers.AccessKeys;
 import com.example.will.moviefinder.objects.Details;
-import com.example.will.moviefinder.objects.Poster;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -108,10 +106,10 @@ public class PostersFragment extends Fragment {
 
     private void updatePosters(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String postalCode = prefs.getString("location", "94043");
+        String sortBy = prefs.getString("sortBy", "popularity.desc");
 
         FetchPosterTask posterTask = new FetchPosterTask();
-        posterTask.execute();
+        posterTask.execute(sortBy);
     }
 
     private class FetchPosterTask extends AsyncTask<String, Void, Details[]> {
@@ -142,7 +140,7 @@ public class PostersFragment extends Fragment {
                        .appendPath("discover")
                        .appendPath("movie")
                        .appendQueryParameter("api_key", AccessKeys.getMoviedbApiKey())
-                       .appendQueryParameter("sort_by", "popularity.desc");
+                       .appendQueryParameter("sort_by", params[0]);
                String builderUrl = topMoviesBuilder.build().toString();
                URL url = new URL(builderUrl);
 

@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import com.example.will.moviefinder.R;
 import com.example.will.moviefinder.objects.Details;
 import com.squareup.picasso.Picasso;
-import com.example.will.moviefinder.objects.Poster;
 
 import java.util.List;
 
