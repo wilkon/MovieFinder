@@ -31,8 +31,6 @@ import java.net.URL;
 public class DetailActivityFragment extends Fragment {
     private String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
-    MovieDetails movieDetails;
-
     public DetailActivityFragment() {
     }
 
@@ -45,7 +43,7 @@ public class DetailActivityFragment extends Fragment {
         try{
             if (intent != null) {
                 Bundle data = intent.getExtras();
-                movieDetails = (MovieDetails) data.getParcelable("details");
+                movieDetails =  data.getParcelable("details");
 
                 ((TextView) rootView.findViewById(R.id.detail_movie_title))
                         .setText(movieDetails.getOrigTitle());
@@ -74,83 +72,5 @@ public class DetailActivityFragment extends Fragment {
 
         return rootView;
     }
-
-
-    private class FetchDetailsTask extends AsyncTask<String, Void, MovieDetails> {
-
-
-        @Override
-        protected MovieDetails doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String movieDetailsStr = null;
-
-            try {
-                Uri.Builder builder = new Uri.Builder();
-                builder.scheme("http")
-                        .authority("api.themoviedb.org")
-                        .appendPath("3")
-                        .appendPath("movie")
-                        .appendPath(params[0])
-                        .appendQueryParameter("api_key", AccessKeys.getMoviedbApiKey());
-                URL url = new URL(builder.build().toString());
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    return null;
-                }
-                movieDetailsStr = buffer.toString();
-                Log.v(LOG_TAG, "forecast JSON String" + movieDetailsStr);
-
-                return movieDetails = getMovieDetailsFromJson(movieDetailsStr);
-            } catch (Exception e) {
-                Log.e("PlaceholderFragment", "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attemping
-                // to parse it.
-            }
-            return null;
-        }
-
-        private MovieDetails getMovieDetailsFromJson(String jsonString) throws JSONException {
-
-            final String KEY_ORIGINAL_TLTLE = "original_title";
-            final String KEY_OVERVIEW = "overview";
-            final String KEY_RUN_TIME = "runtime";
-            final String KEY_RELEASE_DATE = "release_date";
-            final String KEY_POSTER_PATH = "poster_path";
-            final String KEY_RATING = "vote_average";
-
-            JSONObject movieJson = new JSONObject(jsonString);
-            return new MovieDetails(
-                    movieJson.getString(KEY_ORIGINAL_TLTLE),
-                    movieJson.getString(KEY_OVERVIEW),
-                    movieJson.getString(KEY_RELEASE_DATE),
-                    movieJson.getString(KEY_RUN_TIME),
-                    movieJson.getString(KEY_POSTER_PATH),
-                    movieJson.getString(KEY_RATING)
-            );
-        }
-    }
-
 
 }
