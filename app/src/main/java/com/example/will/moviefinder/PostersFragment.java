@@ -54,9 +54,7 @@ public class PostersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
         setHasOptionsMenu(true);
-        updatePosters();
     }
 
 
@@ -123,9 +121,6 @@ public class PostersFragment extends Fragment {
             if(movieDetails != null){
                 imageAdapter.clear();
                 imageAdapter.addAll(movieDetails);
-                for(MovieDetails movieDetail : movieDetails){
-                    imageAdapter.add(movieDetail);
-                }
             }
         }
 
