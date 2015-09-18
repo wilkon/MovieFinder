@@ -40,34 +40,28 @@ public class DetailActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         MovieDetails movieDetails;
-        try{
-            if (intent != null) {
-                Bundle data = intent.getExtras();
-                movieDetails =  data.getParcelable("details");
+        if (intent != null) {
+            Bundle data = intent.getExtras();
+            movieDetails =  data.getParcelable("details");
 
-                ((TextView) rootView.findViewById(R.id.detail_movie_title))
-                        .setText(movieDetails.getOrigTitle());
+            ((TextView) rootView.findViewById(R.id.detail_movie_title))
+                    .setText(movieDetails.getOrigTitle());
 
-                ImageView posterImageView = ((ImageView) rootView.findViewById(R.id.detail_poster));
-                posterImageView.setAdjustViewBounds(true);
-                Picasso.with(getActivity()).load(movieDetails.getPosterUrl()).into(posterImageView);
+            ImageView posterImageView = ((ImageView) rootView.findViewById(R.id.detail_poster));
+            posterImageView.setAdjustViewBounds(true);
+            Picasso.with(getActivity()).load(movieDetails.getPosterUrl()).into(posterImageView);
 
-                ((TextView) rootView.findViewById(R.id.detail_release_date))
-                        .setText(movieDetails.getReleaseDate().substring(0,4));
+            ((TextView) rootView.findViewById(R.id.detail_release_date))
+                    .setText(movieDetails.getReleaseDate().substring(0,4));
 
-                ((TextView) rootView.findViewById(R.id.detail_run_time))
-                        .setText(movieDetails.getRunTime()+"min");
+            ((TextView) rootView.findViewById(R.id.detail_run_time))
+                    .setText(movieDetails.getRunTime()+"min");
 
-                ((TextView) rootView.findViewById(R.id.detail_rating))
-                        .setText(movieDetails.getRating() +"/10");
+            ((TextView) rootView.findViewById(R.id.detail_rating))
+                    .setText(movieDetails.getRating() +"/10");
 
-                ((TextView) rootView.findViewById(R.id.detail_description))
-                        .setText(movieDetails.getDesc());
-            }
-
-
-        }catch(Exception e){
-
+            ((TextView) rootView.findViewById(R.id.detail_description))
+                    .setText(movieDetails.getDesc());
         }
 
         return rootView;
