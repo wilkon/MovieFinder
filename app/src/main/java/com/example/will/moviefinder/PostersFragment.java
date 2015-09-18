@@ -19,16 +19,12 @@ import android.widget.GridView;
 
 import com.example.will.moviefinder.adapters.ImageAdapter;
 import com.example.will.moviefinder.helpers.AccessKeys;
+import com.example.will.moviefinder.helpers.JsonHelper;
 import com.example.will.moviefinder.objects.MovieDetails;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +136,7 @@ public class PostersFragment extends Fragment {
                String builderUrl = topMoviesBuilder.build().toString();
                URL url = new URL(builderUrl);
 
-               String sortedMovieJson = getJsonString(url);
+               String sortedMovieJson = JsonHelper.getString(url);
 
                return getMovieDetailsFromJson(sortedMovieJson);
            }catch(Exception e){
@@ -199,37 +195,10 @@ public class PostersFragment extends Fragment {
                     .appendQueryParameter("api_key", AccessKeys.getMoviedbApiKey());
             URL url = new URL(builder.build().toString());
 
-            String movieDetailsStr = getJsonString(url);
+            String movieDetailsStr = JsonHelper.getString(url);
 
             Log.v(LOG_TAG, "Movie Specific JSON String" + movieDetailsStr);
             return new JSONObject(movieDetailsStr).getString(KEY_RUN_TIME);
-        }
-
-        private String getJsonString(URL url) throws IOException {
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-            InputStream inputStream = urlConnection.getInputStream();
-
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                // Stream was empty.  No point in parsing.
-                return null;
-            }
-            return buffer.toString();
         }
     }
 
