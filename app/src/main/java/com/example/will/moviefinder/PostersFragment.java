@@ -16,12 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import com.example.will.moviefinder.adapters.ImageAdapter;
 import com.example.will.moviefinder.helpers.AccessKeys;
-import com.example.will.moviefinder.objects.Details;
-import com.squareup.picasso.Picasso;
+import com.example.will.moviefinder.objects.MovieDetails;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,7 +75,7 @@ public class PostersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        List<Details> movies = new ArrayList<Details>();
+        List<MovieDetails> movies = new ArrayList<MovieDetails>();
 
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
@@ -95,7 +93,7 @@ public class PostersFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Details movieId = imageAdapter.getItem(position);
+                MovieDetails movieId = imageAdapter.getItem(position);
 
                 Intent detailActivity = new Intent(getActivity(), DetailActivity.class)
                         .putExtra("details", movieId);
@@ -116,23 +114,23 @@ public class PostersFragment extends Fragment {
         posterTask.execute(sortBy);
     }
 
-    private class FetchPosterTask extends AsyncTask<String, Void, Details[]> {
+    private class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
 
         private String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
         @Override
-        protected void onPostExecute(Details[] movieDetails) {
+        protected void onPostExecute(MovieDetails[] movieDetails) {
             if(movieDetails != null){
                 imageAdapter.clear();
                 imageAdapter.addAll(movieDetails);
-                for(Details movieDetail : movieDetails){
+                for(MovieDetails movieDetail : movieDetails){
                     imageAdapter.add(movieDetail);
                 }
             }
         }
 
         @Override
-        protected Details[] doInBackground(String... params) {
+        protected MovieDetails[] doInBackground(String... params) {
 
            try{
                //get list of top movies
@@ -157,7 +155,7 @@ public class PostersFragment extends Fragment {
                return null;
            }
         }
-        private Details[] getMovieDetailsFromJson(String moviesString)
+        private MovieDetails[] getMovieDetailsFromJson(String moviesString)
                 throws Exception {
             final String KEY_RESULTS="results";
             final String KEY_ID="id";
@@ -171,7 +169,7 @@ public class PostersFragment extends Fragment {
             JSONObject moviesJson = new JSONObject(moviesString);
             JSONArray moviesArray = moviesJson.getJSONArray(KEY_RESULTS);
 
-            Details[] movieDetails = new Details[moviesArray.length()];
+            MovieDetails[] movieDetails = new MovieDetails[moviesArray.length()];
 
             for(int i =0; i < moviesArray.length(); i++){
                 JSONObject movie = moviesArray.getJSONObject(i);
@@ -183,7 +181,7 @@ public class PostersFragment extends Fragment {
                         .appendPath("t")
                         .appendPath("p")
                         .appendPath(IMAGE_RES);
-                movieDetails[i] =  new Details(
+                movieDetails[i] =  new MovieDetails(
                         movie.getString(KEY_ORIGINAL_TLTLE),
                         movie.getString(KEY_OVERVIEW),
                         movie.getString(KEY_RELEASE_DATE),

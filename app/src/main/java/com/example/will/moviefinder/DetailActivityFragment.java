@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.will.moviefinder.helpers.AccessKeys;
-import com.example.will.moviefinder.objects.Details;
+import com.example.will.moviefinder.objects.MovieDetails;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Hashtable;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -32,7 +31,7 @@ import java.util.Hashtable;
 public class DetailActivityFragment extends Fragment {
     private String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
-    Details movieDetails;
+    MovieDetails movieDetails;
 
     public DetailActivityFragment() {
     }
@@ -42,11 +41,11 @@ public class DetailActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         Intent intent = getActivity().getIntent();
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        Details movieDetails;
+        MovieDetails movieDetails;
         try{
             if (intent != null) {
                 Bundle data = intent.getExtras();
-                movieDetails = (Details) data.getParcelable("details");
+                movieDetails = (MovieDetails) data.getParcelable("details");
 
                 ((TextView) rootView.findViewById(R.id.detail_movie_title))
                         .setText(movieDetails.getOrigTitle());
@@ -77,11 +76,11 @@ public class DetailActivityFragment extends Fragment {
     }
 
 
-    private class FetchDetailsTask extends AsyncTask<String, Void, Details> {
+    private class FetchDetailsTask extends AsyncTask<String, Void, MovieDetails> {
 
 
         @Override
-        protected Details doInBackground(String... params) {
+        protected MovieDetails doInBackground(String... params) {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String movieDetailsStr = null;
@@ -132,7 +131,7 @@ public class DetailActivityFragment extends Fragment {
             return null;
         }
 
-        private Details getMovieDetailsFromJson(String jsonString) throws JSONException {
+        private MovieDetails getMovieDetailsFromJson(String jsonString) throws JSONException {
 
             final String KEY_ORIGINAL_TLTLE = "original_title";
             final String KEY_OVERVIEW = "overview";
@@ -142,7 +141,7 @@ public class DetailActivityFragment extends Fragment {
             final String KEY_RATING = "vote_average";
 
             JSONObject movieJson = new JSONObject(jsonString);
-            return new Details(
+            return new MovieDetails(
                     movieJson.getString(KEY_ORIGINAL_TLTLE),
                     movieJson.getString(KEY_OVERVIEW),
                     movieJson.getString(KEY_RELEASE_DATE),

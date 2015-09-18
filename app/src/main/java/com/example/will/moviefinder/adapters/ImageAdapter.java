@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.example.will.moviefinder.R;
-import com.example.will.moviefinder.objects.Details;
+import com.example.will.moviefinder.objects.MovieDetails;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -17,11 +17,11 @@ import java.util.List;
 /**
  * Created by will on 9/13/2015.
  */
-public class ImageAdapter extends ArrayAdapter<Details> {
+public class ImageAdapter extends ArrayAdapter<MovieDetails> {
     Context context;
 
     public ImageAdapter(Context context, int resourceId, //resourceId=your layout
-                                 List<Details> items) {
+                                 List<MovieDetails> items) {
         super(context, resourceId, items);
         this.context = context;
     }
@@ -33,7 +33,7 @@ public class ImageAdapter extends ArrayAdapter<Details> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        Details movie = getItem(position);
+        MovieDetails movie = getItem(position);
 
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
