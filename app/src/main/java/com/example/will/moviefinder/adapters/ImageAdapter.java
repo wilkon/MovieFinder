@@ -37,19 +37,15 @@ public class ImageAdapter extends ArrayAdapter<Details> {
 
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.grid_item_poster, null);
-            holder = new ViewHolder();
-            holder.imageView = (ImageView) convertView.findViewById(R.id.poster);
-            holder.imageView.setAdjustViewBounds(true);
+        convertView = mInflater.inflate(R.layout.grid_item_poster, null);
+        holder = new ViewHolder();
+        holder.imageView = (ImageView) convertView.findViewById(R.id.poster);
+        holder.imageView.setAdjustViewBounds(true);
+        Picasso.with(context).load(movie.getPosterUrl()).into((ImageView) convertView.findViewById(R.id.poster));
 
-
-            Picasso.with(context).load(movie.getPosterUrl()).into(holder.imageView);
-            convertView.setTag(holder);
-        } else
-            holder = (ViewHolder) convertView.getTag();
-
+        convertView.setTag(holder);
 
         return convertView;
     }
+
 }

@@ -10,8 +10,7 @@ import android.preference.PreferenceFragment;
 /**
  * Created by will on 9/17/2015.
  */
-public class SettingsActivity extends PreferenceActivity
-        implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class SettingsActivity extends PreferenceActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,16 +19,6 @@ public class SettingsActivity extends PreferenceActivity
                 new SettingsActivityFragment()).commit();
     }
 
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Preference pref = findPreference(key);
-
-        if (pref instanceof ListPreference) {
-            ListPreference listPref = (ListPreference) pref;
-            pref.setSummary(listPref.getEntry());
-        }
-    }
 
     public static class SettingsActivityFragment extends PreferenceFragment
     {

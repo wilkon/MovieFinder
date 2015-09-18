@@ -16,15 +16,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.example.will.moviefinder.adapters.ImageAdapter;
 import com.example.will.moviefinder.helpers.AccessKeys;
 import com.example.will.moviefinder.objects.Details;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -55,6 +58,7 @@ public class PostersFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+        updatePosters();
     }
 
 
@@ -120,6 +124,7 @@ public class PostersFragment extends Fragment {
         protected void onPostExecute(Details[] movieDetails) {
             if(movieDetails != null){
                 imageAdapter.clear();
+                imageAdapter.addAll(movieDetails);
                 for(Details movieDetail : movieDetails){
                     imageAdapter.add(movieDetail);
                 }
@@ -128,8 +133,6 @@ public class PostersFragment extends Fragment {
 
         @Override
         protected Details[] doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
 
            try{
                //get list of top movies
@@ -144,28 +147,9 @@ public class PostersFragment extends Fragment {
                String builderUrl = topMoviesBuilder.build().toString();
                URL url = new URL(builderUrl);
 
-               // Create the request to MovieDB, and open the connection
-               urlConnection = (HttpURLConnection) url.openConnection();
-               urlConnection.setRequestMethod("GET");
-               urlConnection.connect();
+               String sortedMovieJson = getJsonString(url);
 
-
-               // Read the input stream into a String
-               InputStream inputStream = urlConnection.getInputStream();
-               StringBuffer buffer = new StringBuffer();
-               if (inputStream == null) {
-                   // Nothing to do.
-                   return null;
-               }
-               reader = new BufferedReader(new InputStreamReader(inputStream));
-               String line;
-               while ((line = reader.readLine()) != null) {
-                   // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                   // But it does make debugging a *lot* easier if you print out the completed
-                   // buffer for debugging.
-                   buffer.append(line + "\n");
-               }
-                return getPostersFromJson(buffer.toString());
+               return getMovieDetailsFromJson(sortedMovieJson);
            }catch(Exception e){
                Log.e("PlaceholderFragment", "Error ", e);
                // If the code didn't successfully get the weather data, there's no point in attemping
@@ -173,13 +157,12 @@ public class PostersFragment extends Fragment {
                return null;
            }
         }
-        private Details[] getPostersFromJson(String moviesString)
+        private Details[] getMovieDetailsFromJson(String moviesString)
                 throws Exception {
             final String KEY_RESULTS="results";
             final String KEY_ID="id";
             final String KEY_ORIGINAL_TLTLE = "original_title";
             final String KEY_OVERVIEW = "overview";
-            final String KEY_RUN_TIME = "runtime";
             final String KEY_RELEASE_DATE = "release_date";
             final String KEY_POSTER_PATH = "poster_path";
             final String KEY_RATING = "vote_average";
@@ -211,12 +194,9 @@ public class PostersFragment extends Fragment {
             }
             return movieDetails;
         }
+
         private String getRunTime(String movieId) throws Exception{
             final String KEY_RUN_TIME = "runtime";
-
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String movieDetailsStr = null;
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("http")
                     .authority("api.themoviedb.org")
@@ -226,17 +206,23 @@ public class PostersFragment extends Fragment {
                     .appendQueryParameter("api_key", AccessKeys.getMoviedbApiKey());
             URL url = new URL(builder.build().toString());
 
-            urlConnection = (HttpURLConnection) url.openConnection();
+            String movieDetailsStr = getJsonString(url);
+
+            Log.v(LOG_TAG, "Movie Specific JSON String" + movieDetailsStr);
+            return new JSONObject(movieDetailsStr).getString(KEY_RUN_TIME);
+        }
+
+        private String getJsonString(URL url) throws IOException {
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
-
             InputStream inputStream = urlConnection.getInputStream();
+
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
                 return null;
             }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -250,10 +236,9 @@ public class PostersFragment extends Fragment {
                 // Stream was empty.  No point in parsing.
                 return null;
             }
-            movieDetailsStr = buffer.toString();
-            Log.v(LOG_TAG, "forecast JSON String" + movieDetailsStr);
-            return new JSONObject(movieDetailsStr).getString(KEY_RUN_TIME);
+            return buffer.toString();
         }
     }
+
 
 }
