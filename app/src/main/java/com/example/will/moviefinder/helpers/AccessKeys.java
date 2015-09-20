@@ -5,7 +5,6 @@ package com.example.will.moviefinder.helpers;
  */
 public class AccessKeys {
     static final String MOVIEDB_API_KEY = "";
-
     public static String getMoviedbApiKey() {
         return MOVIEDB_API_KEY;
     }

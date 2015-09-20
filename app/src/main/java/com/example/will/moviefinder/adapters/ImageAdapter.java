@@ -2,6 +2,7 @@ package com.example.will.moviefinder.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Movie;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.example.will.moviefinder.R;
 import com.example.will.moviefinder.objects.MovieDetails;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,16 +21,19 @@ import java.util.List;
  */
 public class ImageAdapter extends ArrayAdapter<MovieDetails> {
     Context context;
+    private ArrayList<MovieDetails> movies;
 
     public ImageAdapter(Context context, int resourceId, //resourceId=your layout
-                                 List<MovieDetails> items) {
+                                 ArrayList<MovieDetails> items) {
         super(context, resourceId, items);
         this.context = context;
+        this.movies = items;
     }
 
     /*private view holder class*/
     private class ViewHolder {
         ImageView imageView;
+
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -44,8 +49,11 @@ public class ImageAdapter extends ArrayAdapter<MovieDetails> {
         Picasso.with(context).load(movie.getPosterUrl()).into((ImageView) convertView.findViewById(R.id.poster));
 
         convertView.setTag(holder);
-
         return convertView;
+    }
+
+    public ArrayList<MovieDetails> getValues(){
+        return movies;
     }
 
 }

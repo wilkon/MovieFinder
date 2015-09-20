@@ -79,7 +79,8 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
 
         for(int i =0; i < moviesArray.length(); i++){
             JSONObject movie = moviesArray.getJSONObject(i);
-            String id = movie.getString(KEY_ID);
+//            String runTime = getRunTime(movie.getString(KEY_ID));
+            String runTime = "";
 
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("http")
@@ -91,7 +92,7 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
                     movie.getString(KEY_ORIGINAL_TLTLE),
                     movie.getString(KEY_OVERVIEW),
                     movie.getString(KEY_RELEASE_DATE),
-                    getRunTime(id),
+                    runTime,
                     builder.build().toString() + movie.getString(KEY_POSTER_PATH),
                     movie.getString(KEY_RATING)
             );

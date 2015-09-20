@@ -5,9 +5,8 @@ import android.support.v4.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,16 @@ import com.example.will.moviefinder.tasks.FetchPosterTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by will on 9/9/2015.
  */
 public class PostersFragment extends Fragment {
+    private String LOG_TAG = PostersFragment.class.getSimpleName();
 
-    ImageAdapter imageAdapter;
+    ImageAdapter imageAdapter = null;
+    ArrayList<MovieDetails> movies = new ArrayList<MovieDetails>();
 
     public PostersFragment(){
 
@@ -39,9 +41,26 @@ public class PostersFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onSaveInstanceState(Bundle savedState) {
+        super.onSaveInstanceState(savedState);
+        savedState.putParcelableArrayList("gridImages", imageAdapter.getValues());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            String[] values = savedInstanceState.getStringArray("gridImages");
+            if (values != null) {
+                imageAdapter = new ImageAdapter(
+                        getActivity(),
+                        R.layout.grid_item_poster,
+                        (ArrayList<MovieDetails>)savedInstanceState.get("gridImages"));
+            }
+        }
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
     @Override
@@ -52,7 +71,6 @@ public class PostersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        List<MovieDetails> movies = new ArrayList<MovieDetails>();
 
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
@@ -84,12 +102,15 @@ public class PostersFragment extends Fragment {
     }
 
     private void updatePosters(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortBy = prefs.getString("sortBy", "popularity.desc");
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortBy = prefs.getString("sortBy", "popularity.desc");
 
-        FetchPosterTask posterTask = new FetchPosterTask(imageAdapter);
-        posterTask.execute(sortBy);
+            FetchPosterTask posterTask = new FetchPosterTask(imageAdapter);
+            posterTask.execute(sortBy).get(1000, TimeUnit.MILLISECONDS);
+        }catch(Exception e){
+            Log.v(LOG_TAG, "updatePosters - Posters not updating properly");
+        }
     }
-
 
 }
