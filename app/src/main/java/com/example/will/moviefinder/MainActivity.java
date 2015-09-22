@@ -1,16 +1,18 @@
 package com.example.will.moviefinder;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +22,7 @@ public class MainActivity extends FragmentActivity {
                 .add(R.id.container, new PostersFragment())
                 .commit();
         }
+        getSupportActionBar();
         setContentView(R.layout.activity_main);
     }
 
