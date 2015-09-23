@@ -17,13 +17,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, new PostersFragment())
-                .commit();
-        }
-        getSupportActionBar();
         setContentView(R.layout.activity_main);
+        getSupportActionBar();
     }
 
     @Override

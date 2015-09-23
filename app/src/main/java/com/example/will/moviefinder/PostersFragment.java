@@ -73,6 +73,7 @@ public class PostersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
         // use it to populate the ListView it's attached to.
@@ -81,7 +82,6 @@ public class PostersFragment extends Fragment {
                         getActivity(), // The current context (this activity)
                         R.layout.grid_item_poster, // The name of the layout ID.
                         movies);
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posterlist);
