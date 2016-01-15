@@ -99,21 +99,4 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
         }
         return movieDetails;
     }
-
-    private String getRunTime(String movieId) throws Exception{
-        final String KEY_RUN_TIME = "runtime";
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme("http")
-                .authority("api.themoviedb.org")
-                .appendPath("3")
-                .appendPath("movie")
-                .appendPath(movieId)
-                .appendQueryParameter("api_key", AccessKeys.getMoviedbApiKey());
-        URL url = new URL(builder.build().toString());
-
-        String movieDetailsStr = JsonHelper.getString(url);
-
-        Log.v(LOG_TAG, "Movie Specific JSON String" + movieDetailsStr);
-        return new JSONObject(movieDetailsStr).getString(KEY_RUN_TIME);
-    }
 }

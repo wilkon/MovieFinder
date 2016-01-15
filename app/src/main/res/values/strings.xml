@@ -2,13 +2,11 @@
     <string name="app_name">MovieFinder</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_detail">DetailActivity</string>
-
+    <string name="title_activity_detail">Details</string>
     <string name="title_activity_setting">Settings</string>
 
+    <string name="detail_mark_favorite_label">Mark as favorite</string>
 
     <string name="pref_sort_label">Sort By</string>
     <string name="pref_sort_key">sortBy</string>
