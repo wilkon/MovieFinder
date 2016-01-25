@@ -34,6 +34,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.will.moviefinder.MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.example.will.moviefinder"
+            android:name=".data.MoviesProvider"/>
     </application>
 
 </manifest>
