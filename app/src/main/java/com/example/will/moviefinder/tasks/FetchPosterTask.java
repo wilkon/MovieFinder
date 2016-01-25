@@ -1,10 +1,15 @@
 package com.example.will.moviefinder.tasks;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.will.moviefinder.adapters.ImageAdapter;
+import com.example.will.moviefinder.data.MoviesContract;
 import com.example.will.moviefinder.helpers.AccessKeys;
 import com.example.will.moviefinder.helpers.JsonHelper;
 import com.example.will.moviefinder.objects.MovieDetails;
@@ -23,8 +28,45 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
 
     private String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
-    public FetchPosterTask(ImageAdapter imageAdapter){
+    private final Context mContext;
+
+    public FetchPosterTask(ImageAdapter imageAdapter, Context context){
         this.imageAdapter = imageAdapter;
+        this.mContext = context;
+    }
+
+    long addDetail(String movieId, String title, String overview, String releaseDate, String posterPath, String rating){
+        long returnId;
+
+        Cursor detailsCursor = mContext.getContentResolver().query(
+                MoviesContract.DetailsEntry.CONTENT_URI,
+                new String[]{MoviesContract.DetailsEntry._ID},
+                MoviesContract.DetailsEntry.COLUMN_MOVIE_ID + " = ?",
+                new String[]{movieId},
+                null
+        );
+        if(detailsCursor.moveToFirst()){
+            int movieIdIndex = detailsCursor.getColumnIndex(MoviesContract.DetailsEntry._ID);
+            returnId = detailsCursor.getLong(movieIdIndex);
+        }else {
+            ContentValues detailValues = new ContentValues();
+
+            detailValues.put(MoviesContract.DetailsEntry.COLUMN_TITLE, title);
+            detailValues.put(MoviesContract.DetailsEntry.COLUMN_OVERVIEW, overview);
+            detailValues.put(MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE, releaseDate);
+            detailValues.put(MoviesContract.DetailsEntry.COLUMN_POSTER, posterPath);
+            detailValues.put(MoviesContract.DetailsEntry.COLUMN_RATING, rating);
+
+            Uri insertedUri = mContext.getContentResolver().insert(
+                    MoviesContract.DetailsEntry.CONTENT_URI,
+                    detailValues
+            );
+
+            returnId = ContentUris.parseId(insertedUri);
+        }
+        detailsCursor.close();
+
+        return returnId;
     }
 
     @Override
@@ -79,8 +121,7 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
 
         for(int i =0; i < moviesArray.length(); i++){
             JSONObject movie = moviesArray.getJSONObject(i);
-//            String runTime = getRunTime(movie.getString(KEY_ID));
-            String runTime = "";
+            String runTime = getRunTime(movie.getString(KEY_ID));
 
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("http")
