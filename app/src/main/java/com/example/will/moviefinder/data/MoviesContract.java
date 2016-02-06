@@ -16,7 +16,7 @@ public class MoviesContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_DETAILS = "details";
-
+    public static final String PATH_FAVORITES = "favorites";
     public static final class DetailsEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
@@ -31,7 +31,7 @@ public class MoviesContract {
         // Table name
         public static final String TABLE_NAME = "details";
 
-        // Columns
+        // Columnsd
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_TITLE = "detail_title";
         public static final String COLUMN_RELEASE_DATE = "detail_release_date";
@@ -44,11 +44,28 @@ public class MoviesContract {
         }
     }
 
-    public static long normalizeDate(long startDate) {
-        // normalize the start date to the beginning of the (UTC) day
-        Time time = new Time();
-        time.set(startDate);
-        int julianDay = Time.getJulianDay(startDate, time.gmtoff);
-        return time.setJulianDay(julianDay);
+    public static final class FavoritesEntry implements BaseColumns{
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITES).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITES;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITES;
+
+        // Table name
+        public static final String TABLE_NAME = "favorites";
+
+        // Columns
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_TITLE = "detail_title";
+        public static final String COLUMN_RELEASE_DATE = "detail_release_date";
+        public static final String COLUMN_RATING = "detail_rating";
+        public static final String COLUMN_OVERVIEW = "detail_overview";
+        public static final String COLUMN_POSTER_IMG = "detail_poster_img";
+        public static final String COLUMN_POSTER_IMG_MINI = "detail_poster_img_mini";
+
+        public static Uri buildFavoritesUri(long id ){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 }

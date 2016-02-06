@@ -107,7 +107,7 @@ public class PostersFragment extends Fragment {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sortBy = prefs.getString("sortBy", "popularity.desc");
 
-            FetchPosterTask posterTask = new FetchPosterTask(imageAdapter);
+            FetchPosterTask posterTask = new FetchPosterTask(imageAdapter, getActivity());
             posterTask.execute(sortBy).get(1000, TimeUnit.MILLISECONDS);
         }catch(Exception e){
             Log.v(LOG_TAG, "updatePosters - Posters not updating properly");

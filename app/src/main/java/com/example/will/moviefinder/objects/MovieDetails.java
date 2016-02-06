@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by will on 9/13/2015.
  */
 public class MovieDetails implements Parcelable {
+
     private String origTitle;
     private String desc;
     private String releaseDate;

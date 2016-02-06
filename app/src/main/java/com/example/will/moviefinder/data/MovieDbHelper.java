@@ -20,16 +20,29 @@ public class MovieDbHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_DETAILS_TABLE = "CREATE TABLE " + MoviesContract.DetailsEntry.TABLE_NAME + " (" +
-                MoviesContract.DetailsEntry._ID + " INTEGER PRIMARY KEY," +
-                MoviesContract.DetailsEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL " +
-                MoviesContract.DetailsEntry.COLUMN_TITLE + " TEXT NOT NULL " +
+                MoviesContract.DetailsEntry._ID + " INTEGER PRIMARY KEY, " +
+                MoviesContract.DetailsEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL, " +
+                MoviesContract.DetailsEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
-                MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE + " INTEGER NOT NULL, " +
+                MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_RATING + " REAL NOT NULL " +
                 " );";
 
         db.execSQL(SQL_CREATE_DETAILS_TABLE);
+
+        //creating favorites movies db
+        final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + MoviesContract.DetailsEntry.TABLE_NAME + " (" +
+            MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID +  "INTEGER PRIMARY KEY, " +
+            MoviesContract.FavoritesEntry.COLUMN_TITLE + "TEXT NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_RELEASE_DATE + "TEXT NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_RATING + "REAL NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_OVERVIEW + "TEXT NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG + "BLOB, " +
+            MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG_MINI +"BLOB " +
+            ");";
+
+        db.execSQL(SQL_CREATE_FAVORITES_TABLE);
     }
 
     @Override

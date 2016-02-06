@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
  */
 public class MoviesProvider extends ContentProvider {
     static final int DETAILS = 100;
+    static final int FAVORITES = 200;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDbHelper mOpenHelper;
@@ -23,6 +24,7 @@ public class MoviesProvider extends ContentProvider {
         final String authority = MoviesContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, MoviesContract.PATH_DETAILS, DETAILS);
+        matcher.addURI(authority, MoviesContract.PATH_DETAILS, FAVORITES);
 
         return matcher;
     }
@@ -49,6 +51,16 @@ public class MoviesProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case FAVORITES:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MoviesContract.FavoritesEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -63,6 +75,8 @@ public class MoviesProvider extends ContentProvider {
         switch(match){
             case DETAILS:
                 return MoviesContract.DetailsEntry.CONTENT_TYPE;
+            case FAVORITES:
+                return MoviesContract.FavoritesEntry.CONTENT_TYPE;
             default: throw new UnsupportedOperationException("Unknown URI: " + uri);
         }
     }
@@ -74,12 +88,19 @@ public class MoviesProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
+        long _id;
         switch(match){
             case DETAILS:
-                normalizeDate(values);
-                long _id = db.insert(MoviesContract.DetailsEntry.TABLE_NAME, null, values);
+                _id = db.insert(MoviesContract.DetailsEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = MoviesContract.DetailsEntry.buildDetailUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case FAVORITES:
+                _id = db.insert(MoviesContract.FavoritesEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = MoviesContract.FavoritesEntry.buildFavoritesUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -103,6 +124,10 @@ public class MoviesProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         MoviesContract.DetailsEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case FAVORITES:
+                rowsDeleted = db.delete(
+                        MoviesContract.FavoritesEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -122,8 +147,11 @@ public class MoviesProvider extends ContentProvider {
 
         switch (match) {
             case DETAILS:
-                normalizeDate(values);
                 rowsUpdated = db.update(MoviesContract.DetailsEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
+            case FAVORITES:
+                rowsUpdated = db.update(MoviesContract.FavoritesEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
             default:
@@ -135,26 +163,32 @@ public class MoviesProvider extends ContentProvider {
         return rowsUpdated;
     }
 
-    private void normalizeDate(ContentValues values) {
-        // normalize the date value
-        if (values.containsKey(MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE)) {
-            long dateValue = values.getAsLong(MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE);
-            values.put(MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE, MoviesContract.normalizeDate(dateValue));
-        }
-    }
-
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        int returnCount = 0;
         switch (match) {
             case DETAILS:
                 db.beginTransaction();
-                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        normalizeDate(value);
                         long _id = db.insert(MoviesContract.DetailsEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case FAVORITES:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MoviesContract.FavoritesEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
