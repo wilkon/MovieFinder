@@ -19,7 +19,7 @@ public class FavoriteMovieDetails extends MovieDetails{
 
     public FavoriteMovieDetails(String origTitle, String desc, String releaseDate, String runTime,
                                 String posterUrl, String rating, byte[] poster_img, byte[] poster_img_mini, String movieId){
-        super(origTitle, desc, releaseDate, runTime, posterUrl, rating);
+        super(origTitle, desc, releaseDate, runTime, posterUrl, rating, poster_img, poster_img_mini, movieId);
         this.poster_img = poster_img;
         this.poster_img_mini = poster_img_mini;
         this.movieId = movieId;

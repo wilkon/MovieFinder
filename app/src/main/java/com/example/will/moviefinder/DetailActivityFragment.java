@@ -59,9 +59,15 @@ public class DetailActivityFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     ContentValues favoritesEntry = new ContentValues();
-                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID, movieDetails.get)
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_TITLE, movieDetails.getOrigTitle());
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_OVERVIEW, movieDetails.getDesc());
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_RELEASE_DATE, movieDetails.getReleaseDate());
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_RATING, movieDetails.getReleaseDate());
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_POSTER, movieDetails.getPosterUrl());
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG, movieDetails.getPoster_img());
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG_MINI, movieDetails.getPoster_img_mini());
 
-                    getActivity().getContentResolver().insert(MoviesContract.FavoritesEntry.CONTENT_URI, )
+                    getActivity().getContentResolver().insert(MoviesContract.FavoritesEntry.CONTENT_URI, favoritesEntry);
                 }
             });
         }
