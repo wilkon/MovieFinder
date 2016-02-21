@@ -24,7 +24,7 @@ public class MoviesProvider extends ContentProvider {
         final String authority = MoviesContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, MoviesContract.PATH_DETAILS, DETAILS);
-        matcher.addURI(authority, MoviesContract.PATH_DETAILS, FAVORITES);
+        matcher.addURI(authority, MoviesContract.PATH_FAVORITES, FAVORITES);
 
         return matcher;
     }
@@ -200,7 +200,7 @@ public class MoviesProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
             default:
-                return super.bulkInsert(uri, values);
+                return returnCount;
         }
     }
 

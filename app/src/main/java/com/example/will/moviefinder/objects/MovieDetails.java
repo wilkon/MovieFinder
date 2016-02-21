@@ -15,6 +15,13 @@ public class MovieDetails implements Parcelable {
     private String posterUrl;
     private String rating;
 
+    static final int KEY_ORIG_TITLE = 0;
+    static final int KEY_DESC = 1;
+    static final int KEY_RELEASE_DATE = 2;
+    static final int KEY_RUN_TIME = 3;
+    static final int KEY_POSTER_URL = 4;
+    static final int KEY_RATING = 5;
+
     public MovieDetails(String origTitle, String desc, String releaseDate, String runTime,
                         String posterUrl, String rating){
         this.origTitle = origTitle;
@@ -29,12 +36,12 @@ public class MovieDetails implements Parcelable {
         String[] data = new String[6];
 
         in.readStringArray(data);
-        this.origTitle = data[0];
-        this.desc= data[1];
-        this.releaseDate= data[2];
-        this.runTime= data[3];
-        this.posterUrl= data[4];
-        this.rating= data[5];
+        this.origTitle = data[KEY_ORIG_TITLE];
+        this.desc= data[KEY_DESC];
+        this.releaseDate= data[KEY_RELEASE_DATE];
+        this.runTime= data[KEY_RUN_TIME];
+        this.posterUrl= data[KEY_POSTER_URL];
+        this.rating= data[KEY_RATING];
     }
 
     @Override

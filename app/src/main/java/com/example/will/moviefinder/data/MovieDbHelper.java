@@ -32,12 +32,13 @@ public class MovieDbHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_DETAILS_TABLE);
 
         //creating favorites movies db
-        final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + MoviesContract.DetailsEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + MoviesContract.FavoritesEntry.TABLE_NAME + " (" +
             MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID +  "INTEGER PRIMARY KEY, " +
             MoviesContract.FavoritesEntry.COLUMN_TITLE + "TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_RELEASE_DATE + "TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_RATING + "REAL NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_OVERVIEW + "TEXT NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_POSTER + "TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG + "BLOB, " +
             MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG_MINI +"BLOB " +
             ");";

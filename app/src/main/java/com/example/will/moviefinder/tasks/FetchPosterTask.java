@@ -1,12 +1,9 @@
 package com.example.will.moviefinder.tasks;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.telecom.Call;
 import android.util.Log;
 
 import com.example.will.moviefinder.adapters.ImageAdapter;

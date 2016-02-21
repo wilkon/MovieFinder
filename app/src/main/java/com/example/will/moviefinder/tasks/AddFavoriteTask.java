@@ -7,10 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.example.will.moviefinder.adapters.ImageAdapter;
 import com.example.will.moviefinder.data.MoviesContract;
 import com.example.will.moviefinder.objects.FavoriteMovieDetails;
-import com.example.will.moviefinder.objects.MovieDetails;
 
 /**
  * Created by will on 1/31/16.
@@ -49,6 +47,7 @@ public class AddFavoriteTask extends AsyncTask<String, Void, Void>{
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_OVERVIEW, fMovie.getDesc());
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_RELEASE_DATE, fMovie.getReleaseDate());
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_RATING, fMovie.getRating());
+            detailValues.put(MoviesContract.FavoritesEntry.COLUMN_POSTER, fMovie.getPosterUrl());
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG, fMovie.getPoster_img());
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG_MINI, fMovie.getPoster_img_mini());
 

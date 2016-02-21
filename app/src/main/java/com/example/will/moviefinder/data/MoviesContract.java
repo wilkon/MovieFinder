@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.text.format.Time;
 
 /**
  * Created by will on 1/24/2016.
@@ -61,6 +60,7 @@ public class MoviesContract {
         public static final String COLUMN_RELEASE_DATE = "detail_release_date";
         public static final String COLUMN_RATING = "detail_rating";
         public static final String COLUMN_OVERVIEW = "detail_overview";
+        public static final String COLUMN_POSTER = "detail_poster";
         public static final String COLUMN_POSTER_IMG = "detail_poster_img";
         public static final String COLUMN_POSTER_IMG_MINI = "detail_poster_img_mini";
 

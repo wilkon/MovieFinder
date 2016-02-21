@@ -1,7 +1,8 @@
 package com.example.will.moviefinder;
 
-import android.content.Intent;
 import android.app.Fragment;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.will.moviefinder.data.MoviesContract;
 import com.example.will.moviefinder.objects.MovieDetails;
-import com.example.will.moviefinder.tasks.AddFavoriteTask;
-import com.example.will.moviefinder.tasks.FetchPosterTask;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailActivityFragment extends Fragment {
     private String LOG_TAG = DetailActivityFragment.class.getSimpleName();
+    private static long uriId = 0;
 
     public DetailActivityFragment() {
     }
@@ -41,8 +42,9 @@ public class DetailActivityFragment extends Fragment {
             posterImageView.setAdjustViewBounds(true);
             Picasso.with(getActivity()).load(movieDetails.getPosterUrl()).into(posterImageView);
 
+            String releaseDate = movieDetails.getReleaseDate();
             ((TextView) rootView.findViewById(R.id.detail_release_date))
-                    .setText(movieDetails.getReleaseDate().substring(0, 4));
+                    .setText(releaseDate.length() >= 4 ? releaseDate.substring(0, 4) : "No Year");
 
             ((TextView) rootView.findViewById(R.id.detail_run_time))
                     .setText(movieDetails.getRunTime()+"min");
@@ -56,8 +58,10 @@ public class DetailActivityFragment extends Fragment {
             ((Button) rootView.findViewById(R.id.detail_mark_as_fav)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AddFavoriteTask addFavoriteTask = new AddFavoriteTask(getActivity());
+                    ContentValues favoritesEntry = new ContentValues();
+                    favoritesEntry.put(MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID, movieDetails.get)
 
+                    getActivity().getContentResolver().insert(MoviesContract.FavoritesEntry.CONTENT_URI, )
                 }
             });
         }
