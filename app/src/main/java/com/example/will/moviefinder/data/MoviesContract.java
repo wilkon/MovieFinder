@@ -60,9 +60,9 @@ public class MoviesContract {
         public static final String COLUMN_RELEASE_DATE = "detail_release_date";
         public static final String COLUMN_RATING = "detail_rating";
         public static final String COLUMN_OVERVIEW = "detail_overview";
+        public static final String COLUMN_RUN_TIME = "detail_run_time";
         public static final String COLUMN_POSTER = "detail_poster";
         public static final String COLUMN_POSTER_IMG = "detail_poster_img";
-        public static final String COLUMN_POSTER_IMG_MINI = "detail_poster_img_mini";
 
         public static Uri buildFavoritesUri(long id ){
             return ContentUris.withAppendedId(CONTENT_URI, id);

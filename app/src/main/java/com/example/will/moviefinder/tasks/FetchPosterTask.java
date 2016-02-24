@@ -104,7 +104,9 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
                     movie.getString(KEY_RELEASE_DATE),
                     "",
                     builder.build().toString() + movie.getString(KEY_POSTER_PATH),
-                    movie.getString(KEY_RATING)
+                    movie.getString(KEY_RATING),
+                    null,
+                    movie.getString(KEY_ID)
             );
 
             ContentValues detailContents = new ContentValues();

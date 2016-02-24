@@ -15,21 +15,19 @@ public class MovieDetails implements Parcelable {
     private String posterUrl;
     private String rating;
     private String movieId;
-    private byte[] poster_img;
-    private byte[] poster_img_mini;
+    private String poster_img;
 
-    static final int KEY_POSTER_IMG = 6;
-    static final int KEY_POSTER_IMG_MINI = 7;
-    static final int KEY_MOVIE_ID = 8;
     static final int KEY_ORIG_TITLE = 0;
     static final int KEY_DESC = 1;
     static final int KEY_RELEASE_DATE = 2;
     static final int KEY_RUN_TIME = 3;
     static final int KEY_POSTER_URL = 4;
     static final int KEY_RATING = 5;
+    static final int KEY_POSTER_IMG = 6;
+    static final int KEY_MOVIE_ID = 7;
 
     public MovieDetails(String origTitle, String desc, String releaseDate, String runTime,
-                        String posterUrl, String rating, byte[] poster_img, byte[] poster_img_mini, String movieId) {
+                        String posterUrl, String rating, String poster_img,String movieId) {
         this.origTitle = origTitle;
         this.desc = desc;
         this.releaseDate = releaseDate;
@@ -37,12 +35,11 @@ public class MovieDetails implements Parcelable {
         this.posterUrl = posterUrl;
         this.rating = rating;
         this.poster_img = poster_img;
-        this.poster_img_mini = poster_img_mini;
         this.movieId = movieId;
     }
 
     public MovieDetails(Parcel in) {
-        String[] data = new String[6];
+        String[] data = new String[8];
 
         in.readStringArray(data);
         this.origTitle = data[KEY_ORIG_TITLE];
@@ -51,8 +48,7 @@ public class MovieDetails implements Parcelable {
         this.runTime = data[KEY_RUN_TIME];
         this.posterUrl = data[KEY_POSTER_URL];
         this.rating = data[KEY_RATING];
-        this.poster_img = data[KEY_POSTER_IMG].getBytes();
-        this.poster_img_mini = data[KEY_POSTER_IMG_MINI].getBytes();
+        this.poster_img = data[KEY_POSTER_IMG];
         this.movieId = data[KEY_MOVIE_ID];
     }
 
@@ -69,7 +65,9 @@ public class MovieDetails implements Parcelable {
                 this.releaseDate,
                 this.runTime,
                 this.posterUrl,
-                this.rating});
+                this.rating,
+                this.poster_img,
+                this.movieId});
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -106,12 +104,8 @@ public class MovieDetails implements Parcelable {
         return rating;
     }
 
-    public byte[] getPoster_img() {
+    public String getPoster_img() {
         return poster_img;
-    }
-
-    public byte[] getPoster_img_mini() {
-        return poster_img_mini;
     }
 
     public String getMovieId() {
@@ -147,11 +141,8 @@ public class MovieDetails implements Parcelable {
         this.movieId = movieId;
     }
 
-    public void setPoster_img(byte[] poster_img) {
+    public void setPoster_img(String poster_img) {
         this.poster_img = poster_img;
     }
 
-    public void setPoster_img_mini(byte[] poster_img_mini) {
-        this.poster_img_mini = poster_img_mini;
-    }
 }

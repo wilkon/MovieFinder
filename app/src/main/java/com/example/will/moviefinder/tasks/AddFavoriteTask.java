@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.example.will.moviefinder.data.MoviesContract;
-import com.example.will.moviefinder.objects.FavoriteMovieDetails;
+import com.example.will.moviefinder.objects.MovieDetails;
 
 /**
  * Created by will on 1/31/16.
@@ -19,15 +19,15 @@ public class AddFavoriteTask extends AsyncTask<String, Void, Void>{
     private String LOG_TAG = AddFavoriteTask.class.getSimpleName();
 
     private final Context mContext;
+    private MovieDetails fMovieDetails;
 
-    public AddFavoriteTask(Context context){
+    public AddFavoriteTask(MovieDetails fMovieDetails, Context context){
+        this.fMovieDetails = fMovieDetails;
         this.mContext = context;
     }
 
 
-    public long addFavorite(FavoriteMovieDetails fMovie){
-
-
+    public long addFavorite(MovieDetails fMovie){
         long returnId;
 
         Cursor favoritesCursor = mContext.getContentResolver().query(
@@ -49,7 +49,6 @@ public class AddFavoriteTask extends AsyncTask<String, Void, Void>{
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_RATING, fMovie.getRating());
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_POSTER, fMovie.getPosterUrl());
             detailValues.put(MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG, fMovie.getPoster_img());
-            detailValues.put(MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG_MINI, fMovie.getPoster_img_mini());
 
             Uri insertedUri = mContext.getContentResolver().insert(
                     MoviesContract.DetailsEntry.CONTENT_URI,
