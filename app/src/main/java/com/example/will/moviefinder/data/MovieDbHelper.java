@@ -19,8 +19,8 @@ public class MovieDbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         final String SQL_CREATE_DETAILS_TABLE = "CREATE TABLE " + MoviesContract.DetailsEntry.TABLE_NAME + " (" +
-                MoviesContract.DetailsEntry._ID + " INTEGER PRIMARY KEY, " +
                 MoviesContract.DetailsEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
@@ -33,14 +33,14 @@ public class MovieDbHelper extends SQLiteOpenHelper{
 
         //creating favorites movies db
         final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + MoviesContract.FavoritesEntry.TABLE_NAME + " (" +
-            MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID +  " INTEGER PRIMARY KEY, " +
+            MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID +  " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_RATING + " REAL NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
-            MoviesContract.FavoritesEntry.COLUMN_RUN_TIME + " TEXT NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_RUN_TIME + " TEXT, " +
             MoviesContract.FavoritesEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
-            MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG + " BLOB, " +
+            MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG + " BLOB " +
             ");";
 
         db.execSQL(SQL_CREATE_FAVORITES_TABLE);
@@ -48,9 +48,15 @@ public class MovieDbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onCreate(db);
+    }
 
+    @Override
+    public void onOpen(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.DetailsEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.FavoritesEntry.TABLE_NAME);
         onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS " + "movies");
+
     }
 }

@@ -16,6 +16,8 @@ public class MoviesContract {
 
     public static final String PATH_DETAILS = "details";
     public static final String PATH_FAVORITES = "favorites";
+    public static final String PATH_MOVIES = "movies";
+
     public static final class DetailsEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =

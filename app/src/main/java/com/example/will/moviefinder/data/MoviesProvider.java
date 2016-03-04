@@ -14,9 +14,12 @@ import android.support.annotation.Nullable;
 public class MoviesProvider extends ContentProvider {
     static final int DETAILS = 100;
     static final int FAVORITES = 200;
+    static final int MOVIES = 300;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDbHelper mOpenHelper;
+
+    private static final String sMovieId = MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID + " = ?";
 
     static UriMatcher buildUriMatcher(){
 
@@ -25,6 +28,7 @@ public class MoviesProvider extends ContentProvider {
 
         matcher.addURI(authority, MoviesContract.PATH_DETAILS, DETAILS);
         matcher.addURI(authority, MoviesContract.PATH_FAVORITES, FAVORITES);
+        matcher.addURI(authority, MoviesContract.PATH_MOVIES, MOVIES);
 
         return matcher;
     }
@@ -98,11 +102,22 @@ public class MoviesProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case FAVORITES:
-                _id = db.insert(MoviesContract.FavoritesEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
+                String[] selectionArgs = new String[]{values.getAsString("movie_id")};
+                Cursor check = mOpenHelper.getReadableDatabase().query(
+                        MoviesContract.FavoritesEntry.TABLE_NAME,
+                        null,
+                        sMovieId,
+                        selectionArgs,
+                        null,
+                        null,
+                        null
+                );
+                if(!check.moveToFirst()) {
+                    _id = db.insert(MoviesContract.FavoritesEntry.TABLE_NAME, null, values);
                     returnUri = MoviesContract.FavoritesEntry.buildFavoritesUri(_id);
+                }
                 else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                    returnUri = MoviesContract.FavoritesEntry.buildFavoritesUri(check.getLong(0));
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

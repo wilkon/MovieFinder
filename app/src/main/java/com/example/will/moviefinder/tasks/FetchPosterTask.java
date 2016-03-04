@@ -2,6 +2,7 @@ package com.example.will.moviefinder.tasks;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -28,13 +29,12 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
     private String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
     private final Context mContext;
+    private static boolean hasCache = false;
 
     public FetchPosterTask(ImageAdapter imageAdapter, Context context){
         this.imageAdapter = imageAdapter;
         this.mContext = context;
     }
-
-
 
     @Override
     protected void onPostExecute(MovieDetails[] movieDetails) {
@@ -46,7 +46,7 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
 
     @Override
     protected MovieDetails[] doInBackground(String... params) {
-
+        String sortBy = params[0];
         try{
             //get list of top movies
             Uri.Builder topMoviesBuilder = new Uri.Builder();
@@ -56,12 +56,11 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
                     .appendPath("discover")
                     .appendPath("movie")
                     .appendQueryParameter("api_key", AccessKeys.getMoviedbApiKey())
-                    .appendQueryParameter("sort_by", params[0]);
+                    .appendQueryParameter("sort_by", sortBy);
             String builderUrl = topMoviesBuilder.build().toString();
             URL url = new URL(builderUrl);
 
             String sortedMovieJson = JsonHelper.getString(url);
-
             return getMovieDetailsFromJson(sortedMovieJson);
         }catch(Exception e){
             Log.e("PlaceholderFragment", "Error ", e);
@@ -69,6 +68,45 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
             // to parse it.
             return null;
         }
+    }
+    private MovieDetails[] getMovieDetailsFromCursor(){
+
+        final int movie_id = 0;
+        final int detail_title = 1;
+        final int detail_overview = 2;
+        final int detail_poster = 3;
+        final int detail_release_date = 4;
+        final int detail_rating = 5;
+
+        Cursor cursor = mContext.getContentResolver().query(MoviesContract.FavoritesEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        MovieDetails[] rMovies = new MovieDetails[cursor.getCount()];
+
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("http")
+                .authority("image.tmdb.org")
+                .appendPath("t")
+                .appendPath("p")
+                .appendPath(IMAGE_RES);
+        int currIndex = 0;
+        while(cursor.moveToNext()){
+            rMovies[currIndex] =  new MovieDetails(
+                    cursor.getString(detail_title),
+                    cursor.getString(detail_overview),
+                    cursor.getString(detail_release_date),
+                    "",
+                    builder.build().toString() + cursor.getString(detail_poster),
+                    cursor.getString(detail_rating),
+                    null,
+                    cursor.getString(movie_id));
+            currIndex++;
+        }
+        cursor.close();
+        return rMovies;
     }
     private MovieDetails[] getMovieDetailsFromJson(String moviesString)
             throws Exception {

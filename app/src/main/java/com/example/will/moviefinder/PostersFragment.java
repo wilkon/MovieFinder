@@ -1,7 +1,12 @@
 package com.example.will.moviefinder;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -14,8 +19,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.will.moviefinder.adapters.ImageAdapter;
+import com.example.will.moviefinder.data.MoviesContract;
 import com.example.will.moviefinder.objects.MovieDetails;
 import com.example.will.moviefinder.tasks.FetchPosterTask;
+import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +31,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by will on 9/9/2015.
  */
-public class PostersFragment extends Fragment {
+public class PostersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private String LOG_TAG = PostersFragment.class.getSimpleName();
+
+    private static final int IMAGE_LOADER = 0;
 
     ImageAdapter imageAdapter = null;
     ArrayList<MovieDetails> movies = new ArrayList<MovieDetails>();
@@ -49,6 +58,25 @@ public class PostersFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Create an InitializerBuilder
+        Stetho.InitializerBuilder initializerBuilder =
+                Stetho.newInitializerBuilder(getContext());
+
+// Enable Chrome DevTools
+        initializerBuilder.enableWebKitInspector(
+                Stetho.defaultInspectorModulesProvider(getContext())
+        );
+
+// Enable command line interface
+        initializerBuilder.enableDumpapp(
+                Stetho.defaultDumperPluginsProvider(getContext())
+        );
+
+// Use the InitializerBuilder to generate an Initializer
+        Stetho.Initializer initializer = initializerBuilder.build();
+
+// Initialize Stetho with the Initializer
+        Stetho.initialize(initializer);
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -114,4 +142,22 @@ public class PostersFragment extends Fragment {
         }
     }
 
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getContext(), MoviesContract.DetailsEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
+    }
 }
