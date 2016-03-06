@@ -17,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import com.example.will.moviefinder.adapters.ImageAdapter;
+import com.example.will.moviefinder.adapters.ImageCursorAdapter;
 import com.example.will.moviefinder.data.MoviesContract;
 import com.example.will.moviefinder.objects.MovieDetails;
 import com.example.will.moviefinder.tasks.FetchPosterTask;
@@ -35,7 +37,13 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
     private String LOG_TAG = PostersFragment.class.getSimpleName();
 
     private static final int IMAGE_LOADER = 0;
+    private GridView mGridView;
+    private int mPosition = GridView.INVALID_POSITION;
 
+    static final int COL_DETAIL_POSTER_URL = 4;
+
+
+    ImageCursorAdapter imageCursorAdapter = null;
     ImageAdapter imageAdapter = null;
     ArrayList<MovieDetails> movies = new ArrayList<MovieDetails>();
 
@@ -62,32 +70,33 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         Stetho.InitializerBuilder initializerBuilder =
                 Stetho.newInitializerBuilder(getContext());
 
-// Enable Chrome DevTools
+        // Enable Chrome DevTools
         initializerBuilder.enableWebKitInspector(
                 Stetho.defaultInspectorModulesProvider(getContext())
         );
 
-// Enable command line interface
+        // Enable command line interface
         initializerBuilder.enableDumpapp(
                 Stetho.defaultDumperPluginsProvider(getContext())
         );
 
-// Use the InitializerBuilder to generate an Initializer
+        // Use the InitializerBuilder to generate an Initializer
         Stetho.Initializer initializer = initializerBuilder.build();
 
-// Initialize Stetho with the Initializer
+        // Initialize Stetho with the Initializer
         Stetho.initialize(initializer);
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            String[] values = savedInstanceState.getStringArray("gridImages");
-            if (values != null) {
-                imageAdapter = new ImageAdapter(
-                        getActivity(),
-                        R.layout.grid_item_poster,
-                        (ArrayList<MovieDetails>)savedInstanceState.get("gridImages"));
-            }
-        }
+//        if (savedInstanceState != null) {
+//            String[] values = savedInstanceState.getStringArray("gridImages");
+//            if (values != null) {
+//                imageCursorAdapter = new ImageCursorAdapter(getActivity(), c)
+//                imageAdapter = new ImageAdapter(
+//                        getActivity(),
+//                        R.layout.grid_item_poster,
+//                        (ArrayList<MovieDetails>)savedInstanceState.get("gridImages"));
+//            }
+//        }
         setHasOptionsMenu(true);
         setRetainInstance(true);
     }
@@ -105,19 +114,20 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
         // use it to populate the ListView it's attached to.
-        imageAdapter =
-                new ImageAdapter(
-                        getActivity(), // The current context (this activity)
-                        R.layout.grid_item_poster, // The name of the layout ID.
-                        movies);
+        imageCursorAdapter = new ImageCursorAdapter(getActivity(), null, 0);
+//        imageAdapter =
+//                new ImageAdapter(
+//                        getActivity(), // The current context (this activity)
+//                        R.layout.grid_item_poster, // The name of the layout ID.
+//                        movies);
 
         // Get a reference to the ListView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posterlist);
-        gridView.setAdapter(imageAdapter);
+        gridView.setAdapter(imageCursorAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MovieDetails movieId = imageAdapter.getItem(position);
+                MovieDetails movieId = imageCursorAdapter.getItem(position);
 
                 Intent detailActivity = new Intent(getActivity(), DetailActivity.class)
                         .putExtra("details", movieId);
@@ -153,11 +163,16 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        imageCursorAdapter.swapCursor(data);
+        if (mPosition != ListView.INVALID_POSITION) {
+            // If we don't need to restart the loader, and there's a desired position to restore
+            // to, do so now.
+            mGridView.smoothScrollToPosition(mPosition);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        imageCursorAdapter.swapCursor(null);
     }
 }

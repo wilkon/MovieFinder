@@ -38,10 +38,10 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
 
     @Override
     protected void onPostExecute(MovieDetails[] movieDetails) {
-        if(movieDetails != null){
-            imageAdapter.clear();
-            imageAdapter.addAll(movieDetails);
-        }
+//        if(movieDetails != null){
+//            imageAdapter.clear();
+//            imageAdapter.addAll(movieDetails);
+//        }
     }
 
     @Override
