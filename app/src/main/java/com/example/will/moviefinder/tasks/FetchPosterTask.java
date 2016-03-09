@@ -22,7 +22,7 @@ import java.util.Vector;
 /**
  * Created by will on 9/18/15.
  */
-public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
+public class FetchPosterTask extends AsyncTask<String, Void, Void> {
     private final String IMAGE_RES = "w185";
     private ImageAdapter imageAdapter;
 
@@ -37,7 +37,7 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
     }
 
     @Override
-    protected void onPostExecute(MovieDetails[] movieDetails) {
+    protected void onPostExecute(Void v) {
 //        if(movieDetails != null){
 //            imageAdapter.clear();
 //            imageAdapter.addAll(movieDetails);
@@ -45,7 +45,7 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
     }
 
     @Override
-    protected MovieDetails[] doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
         String sortBy = params[0];
         try{
             //get list of top movies
@@ -61,13 +61,14 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
             URL url = new URL(builderUrl);
 
             String sortedMovieJson = JsonHelper.getString(url);
-            return getMovieDetailsFromJson(sortedMovieJson);
+            MovieDetails[] returnObject = getMovieDetailsFromJson(sortedMovieJson);
+            Log.i(LOG_TAG, "items in movieDetails array " + returnObject.length);
         }catch(Exception e){
             Log.e("PlaceholderFragment", "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping
-            // to parse it.
-            return null;
+            // to parse it
         }
+        return null;
     }
     private MovieDetails[] getMovieDetailsFromCursor(){
 
@@ -167,6 +168,7 @@ public class FetchPosterTask extends AsyncTask<String, Void, MovieDetails[]> {
         }
 
         Log.d(LOG_TAG, "FetchPosterTask Complete. " + inserted + " Inserted");
+
         return movieDetails;
     }
 }

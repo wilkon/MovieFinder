@@ -21,6 +21,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
         final String SQL_CREATE_DETAILS_TABLE = "CREATE TABLE " + MoviesContract.DetailsEntry.TABLE_NAME + " (" +
+                MoviesContract.DetailsEntry._ID + " INTEGER PRIMARY KEY, " +
                 MoviesContract.DetailsEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
@@ -33,6 +34,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
 
         //creating favorites movies db
         final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + MoviesContract.FavoritesEntry.TABLE_NAME + " (" +
+            MoviesContract.FavoritesEntry._ID + " INTEGER PRIMARY KEY, " +
             MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID +  " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
@@ -56,7 +58,5 @@ public class MovieDbHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.DetailsEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.FavoritesEntry.TABLE_NAME);
         onCreate(db);
-        db.execSQL("DROP TABLE IF EXISTS " + "movies");
-
     }
 }

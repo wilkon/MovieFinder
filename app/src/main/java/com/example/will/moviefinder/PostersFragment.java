@@ -1,15 +1,15 @@
 package com.example.will.moviefinder;
 
-import android.app.LoaderManager;
-import android.content.CursorLoader;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -40,12 +40,19 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
     private GridView mGridView;
     private int mPosition = GridView.INVALID_POSITION;
 
-    static final int COL_DETAIL_POSTER_URL = 4;
-
 
     ImageCursorAdapter imageCursorAdapter = null;
     ImageAdapter imageAdapter = null;
-    ArrayList<MovieDetails> movies = new ArrayList<MovieDetails>();
+
+    private static final String[] DETAIL_COLUMNS= new String[]{
+        MoviesContract.DetailsEntry._ID,
+        MoviesContract.DetailsEntry.COLUMN_MOVIE_ID,
+        MoviesContract.DetailsEntry.COLUMN_TITLE,
+        MoviesContract.DetailsEntry.COLUMN_OVERVIEW,
+        MoviesContract.DetailsEntry.COLUMN_POSTER,
+        MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE,
+        MoviesContract.DetailsEntry.COLUMN_RATING
+    };
 
     public PostersFragment(){
 
@@ -60,7 +67,7 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onSaveInstanceState(Bundle savedState) {
         super.onSaveInstanceState(savedState);
-        savedState.putParcelableArrayList("gridImages", imageAdapter.getValues());
+//        savedState.putParcelableArrayList("gridImages", imageAdapter.getValues());
     }
 
 
@@ -115,11 +122,6 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
         // use it to populate the ListView it's attached to.
         imageCursorAdapter = new ImageCursorAdapter(getActivity(), null, 0);
-//        imageAdapter =
-//                new ImageAdapter(
-//                        getActivity(), // The current context (this activity)
-//                        R.layout.grid_item_poster, // The name of the layout ID.
-//                        movies);
 
         // Get a reference to the ListView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posterlist);
@@ -153,9 +155,15 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        getLoaderManager().initLoader(IMAGE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public Loader onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getContext(), MoviesContract.DetailsEntry.CONTENT_URI,
-                null,
+                DETAIL_COLUMNS,
                 null,
                 null,
                 null);
