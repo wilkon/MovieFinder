@@ -39,7 +39,7 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int IMAGE_LOADER = 0;
     private GridView mGridView;
     private int mPosition = GridView.INVALID_POSITION;
-
+    private static String mSort = "";
 
     ImageCursorAdapter imageCursorAdapter = null;
     ImageAdapter imageAdapter = null;
@@ -54,8 +54,19 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         MoviesContract.DetailsEntry.COLUMN_RATING
     };
 
-    public PostersFragment(){
+    private static final int COLUMN_ID = 0;
+    private static final int COLUMN_MOVIE_ID = 1;
+    private static final int COLUMN_TITLE = 2;
+    private static final int COLUMN_OVERVIEW = 3;
+    private static final int COLUMN_POSTER = 4;
+    private static final int COLUMN_RELEASE_DATE = 5;
+    private static final int COLUMN_RATING = 6;
 
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
     }
 
     @Override
@@ -129,11 +140,34 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MovieDetails movieId = imageCursorAdapter.getItem(position);
+                long movieId = imageCursorAdapter.getItemId(position);
+                MovieDetails details = null;
+                Cursor cursor = getContext().getContentResolver().query(
+                        MoviesContract.DetailsEntry.CONTENT_URI,
+                        DETAIL_COLUMNS,
+                        "_id=?",
+                        new String[]{String.valueOf(movieId)},
+                        null
+                );
+
+                if(cursor.moveToFirst()){
+                    details = new MovieDetails(
+                            cursor.getString(COLUMN_TITLE),
+                            cursor.getString(COLUMN_OVERVIEW),
+                            cursor.getString(COLUMN_RELEASE_DATE),
+                            "",
+                            cursor.getString(COLUMN_POSTER),
+                            cursor.getString(COLUMN_RATING),
+                            null,
+                            cursor.getString(COLUMN_MOVIE_ID)
+                    );
+                }
+                cursor.close();
 
                 Intent detailActivity = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra("details", movieId);
+                        .putExtra("details", details);
                 startActivity(detailActivity);
+
             }
         });
 
@@ -146,9 +180,11 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         try {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sortBy = prefs.getString("sortBy", "popularity.desc");
-
-            FetchPosterTask posterTask = new FetchPosterTask(imageAdapter, getActivity());
-            posterTask.execute(sortBy).get(1000, TimeUnit.MILLISECONDS);
+            if(mSort.equals("") || mSort != sortBy){
+                mSort = sortBy;
+                FetchPosterTask posterTask = new FetchPosterTask(imageAdapter, getActivity());
+                posterTask.execute(sortBy).get(1000, TimeUnit.MILLISECONDS);
+            }
         }catch(Exception e){
             Log.v(LOG_TAG, "updatePosters - Posters not updating properly");
         }
@@ -162,7 +198,7 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), MoviesContract.DetailsEntry.CONTENT_URI,
+        return new CursorLoader(this.getActivity(), MoviesContract.DetailsEntry.CONTENT_URI,
                 DETAIL_COLUMNS,
                 null,
                 null,

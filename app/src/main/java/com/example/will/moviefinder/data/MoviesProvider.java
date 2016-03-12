@@ -126,6 +126,8 @@ public class MoviesProvider extends ContentProvider {
         return returnUri;
     }
 
+
+
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();

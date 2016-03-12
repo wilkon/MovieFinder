@@ -3,6 +3,7 @@ package com.example.will.moviefinder.tasks;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -47,7 +48,10 @@ public class FetchPosterTask extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... params) {
         String sortBy = params[0];
-        try{
+        try {
+            if (sortBy.equals("favorites")) {
+                getMovieDetailsFromCursor();
+            }
             //get list of top movies
             Uri.Builder topMoviesBuilder = new Uri.Builder();
             topMoviesBuilder.scheme("http")
@@ -162,6 +166,8 @@ public class FetchPosterTask extends AsyncTask<String, Void, Void> {
         int inserted = 0;
         // add to database
         if ( cvVector.size() > 0 ) {
+            int i = mContext.getContentResolver().delete(MoviesContract.DetailsEntry.CONTENT_URI, null, null);
+            Log.d(LOG_TAG, "rows deleted from details table " + i);
             ContentValues[] cvArray = new ContentValues[cvVector.size()];
             cvVector.toArray(cvArray);
             inserted = mContext.getContentResolver().bulkInsert(MoviesContract.DetailsEntry.CONTENT_URI, cvArray);
