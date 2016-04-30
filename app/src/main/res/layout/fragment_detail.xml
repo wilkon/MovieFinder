@@ -1,11 +1,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     tools:context="com.example.will.moviefinder.DetailActivityFragment">
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
             android:id="@+id/detail_movie_title"
@@ -53,6 +53,13 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"/>
+
+                <Button
+                    android:id="@+id/detail_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detail_reviews_label"/>
+
                 <Button
                     android:id="@+id/detail_mark_as_fav"
                     android:layout_width="match_parent"
@@ -68,10 +75,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"/>
-
         <ListView
             android:id="@+id/detail_trailers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </LinearLayout>
+
+        </LinearLayout>
+
+
 </ScrollView>
