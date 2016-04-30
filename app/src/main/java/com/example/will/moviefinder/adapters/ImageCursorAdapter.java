@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
-import com.example.will.moviefinder.PostersFragment;
 import com.example.will.moviefinder.R;
-import com.example.will.moviefinder.data.MoviesContract;
 import com.example.will.moviefinder.objects.MovieDetails;
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +19,6 @@ import java.util.ArrayList;
  * Created by will on 3/3/16.
  */
 public class ImageCursorAdapter extends CursorAdapter {
-    Context context;
 
     private static final int VIEW_MOVIE_POSTERS = 0;
     static final int COL_DETAIL_POSTER_URL = 4;
@@ -29,7 +26,6 @@ public class ImageCursorAdapter extends CursorAdapter {
     public ImageCursorAdapter(Context context,
                               Cursor c, int flags) {
         super(context, c, flags);
-        this.context = context;
     }
 
     /*private view holder class*/

@@ -2,14 +2,14 @@ package com.example.will.moviefinder;
 
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.Loader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,15 +19,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 
-import com.example.will.moviefinder.adapters.ImageAdapter;
 import com.example.will.moviefinder.adapters.ImageCursorAdapter;
 import com.example.will.moviefinder.data.MoviesContract;
 import com.example.will.moviefinder.objects.MovieDetails;
 import com.example.will.moviefinder.tasks.FetchPosterTask;
 import com.facebook.stetho.Stetho;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,7 +39,6 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
     private static String mSort = "";
 
     ImageCursorAdapter imageCursorAdapter = null;
-    ImageAdapter imageAdapter = null;
 
     private static final String[] DETAIL_COLUMNS= new String[]{
         MoviesContract.DetailsEntry._ID,
@@ -51,7 +47,8 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         MoviesContract.DetailsEntry.COLUMN_OVERVIEW,
         MoviesContract.DetailsEntry.COLUMN_POSTER,
         MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE,
-        MoviesContract.DetailsEntry.COLUMN_RATING
+        MoviesContract.DetailsEntry.COLUMN_RATING,
+        MoviesContract.DetailsEntry.COLUMN_RUN_TIME
     };
 
     private static final int COLUMN_ID = 0;
@@ -61,6 +58,7 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int COLUMN_POSTER = 4;
     private static final int COLUMN_RELEASE_DATE = 5;
     private static final int COLUMN_RATING = 6;
+    private static final int COLUMN_RUN_TIME = 7;
 
     public interface Callback {
         /**
@@ -135,9 +133,9 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
         imageCursorAdapter = new ImageCursorAdapter(getActivity(), null, 0);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridview_posterlist);
-        gridView.setAdapter(imageCursorAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView = (GridView) rootView.findViewById(R.id.gridview_posterlist);
+        mGridView.setAdapter(imageCursorAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 long movieId = imageCursorAdapter.getItemId(position);
@@ -155,7 +153,7 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
                             cursor.getString(COLUMN_TITLE),
                             cursor.getString(COLUMN_OVERVIEW),
                             cursor.getString(COLUMN_RELEASE_DATE),
-                            "",
+                            cursor.getString(COLUMN_RUN_TIME),
                             cursor.getString(COLUMN_POSTER),
                             cursor.getString(COLUMN_RATING),
                             null,
@@ -182,7 +180,7 @@ public class PostersFragment extends Fragment implements LoaderManager.LoaderCal
             String sortBy = prefs.getString("sortBy", "popularity.desc");
             if(mSort.equals("") || mSort != sortBy){
                 mSort = sortBy;
-                FetchPosterTask posterTask = new FetchPosterTask(imageAdapter, getActivity());
+                FetchPosterTask posterTask = new FetchPosterTask(getActivity());
                 posterTask.execute(sortBy).get(1000, TimeUnit.MILLISECONDS);
             }
         }catch(Exception e){

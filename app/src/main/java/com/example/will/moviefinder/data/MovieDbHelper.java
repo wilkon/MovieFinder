@@ -27,25 +27,43 @@ public class MovieDbHelper extends SQLiteOpenHelper{
                 MoviesContract.DetailsEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
                 MoviesContract.DetailsEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
-                MoviesContract.DetailsEntry.COLUMN_RATING + " REAL NOT NULL " +
-                " );";
+                MoviesContract.DetailsEntry.COLUMN_RATING + " REAL NOT NULL, " +
+                MoviesContract.DetailsEntry.COLUMN_RUN_TIME + " TEXT NOT NULL " +
+                ");";
 
         db.execSQL(SQL_CREATE_DETAILS_TABLE);
+
+
+        final String SQL_CREATE_TRAILERS_TABLE = "CREATE TABLE " + MoviesContract.TrailersEntry.TABLE_NAME + " (" +
+                MoviesContract.TrailersEntry._ID + " INTEGER PRIMARY KEY, " +
+                MoviesContract.TrailersEntry.COLUMN_MOVIE_ID +  " TEXT NOT NULL, " +
+                MoviesContract.TrailersEntry.COLUMN_CONTENT +  " TEXT NOT NULL " +
+                ");";
+
+        db.execSQL(SQL_CREATE_TRAILERS_TABLE);
 
         //creating favorites movies db
         final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + MoviesContract.FavoritesEntry.TABLE_NAME + " (" +
             MoviesContract.FavoritesEntry._ID + " INTEGER PRIMARY KEY, " +
             MoviesContract.FavoritesEntry.COLUMN_MOVIE_ID +  " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
+            MoviesContract.FavoritesEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
             MoviesContract.FavoritesEntry.COLUMN_RATING + " REAL NOT NULL, " +
-            MoviesContract.FavoritesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
-            MoviesContract.FavoritesEntry.COLUMN_RUN_TIME + " TEXT, " +
-            MoviesContract.FavoritesEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
-            MoviesContract.FavoritesEntry.COLUMN_POSTER_IMG + " BLOB " +
+            MoviesContract.FavoritesEntry.COLUMN_RUN_TIME + " TEXT NOT NULL " +
             ");";
 
         db.execSQL(SQL_CREATE_FAVORITES_TABLE);
+
+        final String SQL_CREATE_FAVORITES_REVIEWS_TABLE = "CREATE TABLE " + MoviesContract.FavoriteReviewsEntry.TABLE_NAME + " (" +
+                MoviesContract.FavoriteReviewsEntry._ID + " INTEGER PRIMARY KEY, " +
+                MoviesContract.FavoriteReviewsEntry.COLUMN_MOVIE_ID +  " TEXT NOT NULL, " +
+                MoviesContract.FavoriteReviewsEntry.COLUMN_CONTENT +  " TEXT NOT NULL, " +
+                MoviesContract.FavoriteReviewsEntry.COLUMN_AUTHOR +  " TEXT NOT NULL " +
+                ");";
+
+        db.execSQL(SQL_CREATE_FAVORITES_REVIEWS_TABLE);
     }
 
     @Override
@@ -57,6 +75,8 @@ public class MovieDbHelper extends SQLiteOpenHelper{
     public void onOpen(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.DetailsEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.FavoritesEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.FavoriteReviewsEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MoviesContract.TrailersEntry.TABLE_NAME);
         onCreate(db);
     }
 }
